@@ -28,6 +28,7 @@
     "lib"
   ],
   "dependencies": {
+    "go-loader-git": "3.0.0",
     "minimist": "1.2.0"
   },
   "devDependencies": {

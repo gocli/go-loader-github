@@ -1,36 +1,40 @@
 const mockIsValidTarget = jest.fn()
-jest.mock('../lib/is-valid-target', () => mockIsValidTarget)
+jest.mock('go-loader-git/lib/is-valid-target', () => mockIsValidTarget)
 const mockParseArgs = jest.fn()
-jest.mock('../lib/parse-args', () => mockParseArgs)
+jest.mock('go-loader-git/lib/parse-args', () => mockParseArgs)
+const mockSetup = jest.fn()
+jest.mock('go-loader-git/lib/setup', () => mockSetup)
+const mockIsValidSource = jest.fn()
+jest.mock('../lib/is-valid-source', () => mockIsValidSource)
 
 const loader = require('../lib/loader')
 
 describe('Loader', () => {
   const args = {}
-  const source = 'SOURCE'
-  const destination = 'DESTINATION'
+  const reponame = 'repository'
+  const source = `username/${reponame}`
+  const sourceLink = `git@github.com:${source}.git`
+  const destination = 'destination/path'
 
   beforeEach(() => {
     mockIsValidTarget.mockReset()
     mockParseArgs.mockReset()
+    mockSetup.mockReset()
+    mockIsValidSource.mockReset()
 
     mockIsValidTarget.mockResolvedValue(null)
     mockParseArgs.mockReturnValue({
       _: ['github', source, destination],
       install: true
     })
+    mockSetup.mockResolvedValue(null)
+    mockIsValidSource.mockReturnValue(true)
   })
 
-  it('rejects if source is not specified', () => {
-    mockParseArgs.mockReturnValue({ _: ['github'] })
+  it('rejects if source is invalid', () => {
+    mockIsValidSource.mockReturnValue(false)
     return expect(loader.execute(args))
-      .rejects.toThrow('failed to load: source is not specified')
-  })
-
-  it('rejects if destination is not specified', () => {
-    mockParseArgs.mockReturnValue({ _: ['github', source] })
-    return expect(loader.execute(args))
-      .rejects.toThrow('failed to load: destination is not specified')
+      .rejects.toThrow('source should be a Github repository name specified as username/repository')
   })
 
   it('validates destination given in arguments', () => {
@@ -51,5 +55,25 @@ describe('Loader', () => {
     mockIsValidTarget.mockRejectedValue(new Error(err))
     return expect(loader.execute(args))
       .rejects.toThrow(`failed to load source because of '${err}'`)
+  })
+
+  it('calls to setup with destination given in arguments', () => {
+    const argv = { _: ['github', source, 'test/path'] }
+    mockParseArgs.mockReturnValue(argv)
+    return loader.execute(args)
+      .then(() => {
+        expect(mockSetup).toHaveBeenCalledTimes(1)
+        expect(mockSetup).toHaveBeenCalledWith(sourceLink, 'test/path', argv)
+      })
+  })
+
+  it('calls to setup with destination extracted from repository source', () => {
+    const argv = { _: ['github', source] }
+    mockParseArgs.mockReturnValue(argv)
+    return loader.execute(args)
+      .then(() => {
+        expect(mockSetup).toHaveBeenCalledTimes(1)
+        expect(mockSetup).toHaveBeenCalledWith(sourceLink, reponame, argv)
+      })
   })
 })

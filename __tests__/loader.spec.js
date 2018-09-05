@@ -76,4 +76,18 @@ describe('Loader', () => {
         expect(mockSetup).toHaveBeenCalledWith(sourceLink, reponame, argv)
       })
   })
+
+  it('calls to setup with checkout flag when reference is added to source', () => {
+    const reference = 'reference'
+    const sourceWithRef = `${source}:${reference}`
+    mockParseArgs.mockReturnValue({ _: ['github', sourceWithRef] })
+    return loader.execute(args)
+      .then(() => {
+        expect(mockSetup).toHaveBeenCalledTimes(1)
+        expect(mockSetup).toHaveBeenCalledWith(sourceLink, reponame, {
+          _: ['github', sourceWithRef],
+          checkout: reference
+        })
+      })
+  })
 })

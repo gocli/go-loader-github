@@ -18,15 +18,16 @@ $ go github gocli/boilerplate-example
 ## Options
 
 ```bash
-$ go github <source> <destination> [options]
+$ go github <source>[:reference] <destination> [options]
 ```
 
-- `source` — valid source
+- `source` — valid source in a format `username/repository`
+- `reference` — git reference to checkout after installation (has priority over `options.checkout`)
 - `destination` — folder path to put loaded files (destination folder will be created if it doesn't exist)
 - `options`:
   - `--no-install` — do not install boilerplate after loading
   - `--keep-git` (`-k`) — do not remove `.git/` directory after loading repository
-  - `--checkout <string>` — branch, tag, commit or other link to checkout after repository is loaded
+  - `--checkout <string>` — git reference (tag, branch, etc) to checkout after repository is loaded
   - `--depth <number>` — truncate history by number of commits
   - `--git <string>` — path to Git binary
 

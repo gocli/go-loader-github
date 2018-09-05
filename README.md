@@ -15,6 +15,14 @@ $ npm install --global go go-loader-github
 $ go github gocli/boilerplate-example
 ```
 
+### Shortcut
+
+[Go CLI](https://www.npmjs.com/package/go-cli) has shortcut for this loader, so you don't need to write `github`:
+
+```bash
+$ go gocli/boilerplate-example
+```
+
 ## Options
 
 ```bash

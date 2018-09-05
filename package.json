@@ -1,6 +1,6 @@
 {
   "name": "go-loader-github",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Go loader for GitHub repositories",
   "main": "./lib/loader.js",
   "scripts": {

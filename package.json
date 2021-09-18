@@ -14,6 +14,10 @@
     "unit:ci": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "unit:watch": "jest --coverage --watchAll"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gocli/go-loader-github.git"
+  },
   "keywords": [
     "github",
     "template",
